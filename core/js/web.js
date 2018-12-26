@@ -261,6 +261,7 @@ function CrackCaptchas(){
         }else {
          tor="off";
         }
+        colourID=document.getElementById("set_id3").value;
         if(document.getElementById("verbose3").checked) 
         {
          verbose="on";
@@ -276,7 +277,7 @@ function CrackCaptchas(){
         if(source_file==""){
         source_file="off"
         }
-        params="crack_url="+escape(crack_url)+"&source_file="+escape(source_file)+"&module="+escape(module)+"&tor="+escape(tor)+"&verbose="+escape(verbose)+"&xml="+escape(xml);
+        params="crack_url="+escape(crack_url)+"&source_file="+escape(source_file)+"&colourID="+escape(colourID)+"&module="+escape(module)+"&tor="+escape(tor)+"&verbose="+escape(verbose)+"&xml="+escape(xml);
          }
          runCommandX("cmd_crack",params);
          if(source_file=="off"){

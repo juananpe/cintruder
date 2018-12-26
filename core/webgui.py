@@ -241,6 +241,15 @@ URL: <input type="radio" onclick="javascript:CrackingCheck();" name="cracking_so
 </td>
 </tr>
 <tr>
+<td align="right">Advanced OCR: </td>
+ <td align="center">
+<table cellpadding="5" cellspacing="5">
+<tr>
+ <td>Set Colour ID: <input type="text" name="set_id3" id="set_id3" size="2" value="1" placeholder="Ex: 1"></td>
+</tr></table>
+</td>
+</tr>
+<tr>
  <td align="right">Debug: <input type="checkbox" name="verbose3" id="verbose3"></td>
  <td><center><input type="submit" class="button" value="Crack it!" onclick="CrackCaptchas()"></center></td>
 </tr>
@@ -521,6 +530,8 @@ function runCommandX(cmd,params) {
                 cmd_options = cmd_options + "--mod='" + pGet["module"] + "' "
             if not pGet["xml"]=="off":
                 cmd_options = cmd_options + "--xml='" + pGet["xml"] + "' "
+            if not pGet["colourID"]=="off":
+                cmd_options = cmd_options + "--set-id='" + pGet["colourID"] + "' "
             if pGet["source_file"]=="off": # from remote url source
                 runcmd = "(python -i cintruder --crack '"+pGet["crack_url"]+"' " + cmd_options + "|tee /tmp/out) &"
             else: # from local source 
