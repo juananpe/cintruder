@@ -127,6 +127,9 @@ Crack: <input type="radio" onclick="javascript:OptionsCheck();" name="options" i
  <td><center>
 LOCAL: <input type="radio" onclick="javascript:TrainSourcesCheck();" name="training_sources" id="training_local"/ CHECKED>
 URL: <input type="radio" onclick="javascript:TrainSourcesCheck();" name="training_sources" id="training_url"/>
+
+
+ <br><a href='javascript:runCommandX("cmd_tracklist");javascript:showResults()'>List Last Tracked</a>
 </center></td>
 <td>
 <div id="ifLocal" style="display:none">
@@ -241,6 +244,15 @@ URL: <input type="radio" onclick="javascript:CrackingCheck();" name="cracking_so
 </td>
 </tr>
 <tr>
+<td align="right">Advanced OCR: </td>
+ <td align="center">
+<table cellpadding="5" cellspacing="5">
+<tr>
+ <td>Set Colour ID: <input type="text" name="set_id3" id="set_id3" size="2" value="1" placeholder="Ex: 1"></td>
+</tr></table>
+</td>
+</tr>
+<tr>
  <td align="right">Debug: <input type="checkbox" name="verbose3" id="verbose3"></td>
  <td><center><input type="submit" class="button" value="Crack it!" onclick="CrackCaptchas()"></center></td>
 </tr>
@@ -313,7 +325,35 @@ runCommandX("cmd_remove_ocr",params);
 setTimeout(function() { Reload(word) }, 2000); // delay 2
 }
 </script>
-<script language="javascript">function ViewWord(word) {window.open(word,"_blank","fulscreen=no, titlebar=yes, top=180, left=320, width=720, height=460, resizable=yes", false);}</script></head><body><table width='100%'><tr><td align='center'><font color='white'><div id="cmdOut"></div></font></td></tr><tr><td><br><center><a href='javascript:runCommandX("cmd_dict");'><font color="cyan"><u>View Dictionary Info</u></font></a></center></td></tr><tr><td>"""+str("".join(self.list_words()))+"""</td></tr></table></body></html>"""
+
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+
+<script language="javascript">
+
+function _x(STR_XPATH) {
+    var xresult = document.evaluate(STR_XPATH, document, null, XPathResult.ANY_TYPE, null);
+    var xnodes = [];
+    var xres;
+    while (xres = xresult.iterateNext()) {
+        xnodes.push(xres);
+    }
+
+    return xnodes;
+}
+
+function sendAll(){
+    var botones_ = $(_x('//*[contains(@onclick, "MoveOCR")]'));
+    var botones = jQuery.makeArray( botones_ );
+    
+    // var botones = document.evaluate('//*[contains(@onclick, "MoveOCR")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.innerHTML; 
+    botones.forEach( e => e.click() );
+};
+
+function ViewWord(word) {window.open(word,"_blank","fulscreen=no, titlebar=yes, top=180, left=320, width=720, height=460, resizable=yes", false);}</script></head><body><table width='100%'><tr><td align='center'> <input type='button' value="Add all" onclick="javascript:sendAll()">
+  <font color='white'><div id="cmdOut"></div></font></td></tr><tr><td><br><center><a href='javascript:runCommandX("cmd_dict");'><font color="cyan"><u>View Dictionary Info</u></font></a></center></td></tr><tr><td>"""+str("".join(self.list_words()))+"""</td></tr></table></body></html>"""
 
         self.pages["/lib.js"] = """function loadXMLDoc() {
         var xmlhttp;
@@ -358,7 +398,7 @@ function runCommandX(cmd,params) {
                                 if(newcmd=="cmd_remove_ocr" || newcmd=="cmd_move_ocr" || newcmd=="cmd_dict"){ //do not refresh
                                     return;
                                 } else {
-                                if(newcmd=="cmd_list" || newcmd=="cmd_track" || newcmd=="cmd_crack" || newcmd=="cmd_train") newcmd=newcmd+"_update"
+                                if(newcmd=="cmd_list" || newcmd == "cmd_tracklist" || newcmd=="cmd_track" || newcmd=="cmd_crack" || newcmd=="cmd_train") newcmd=newcmd+"_update"
 								//do not refresh if certain text on response is found
 								if(newcmd.match(/update/) && 
 			 					(
@@ -471,6 +511,14 @@ function runCommandX(cmd,params) {
                     os.remove(o) # purge from previews
                 except:
                     pass
+        if page == "/cmd_tracklist": # list last tracks
+            self.pages["/cmd_tracklist"] = "<pre>Waiting for a list of last tracks...</pre>"
+            runcmd = "( tree -falrRtD -P \"*.gif\" inputs/     "+ "|tee /tmp/out) &"
+        if page == "/cmd_tracklist_update":
+            if not os.path.exists('/tmp/out'):
+                open('/tmp/out', 'w').close()
+            with open('/tmp/out', 'r') as f:
+                self.pages["/cmd_tracklist_update"] = "<pre>"+f.read()+"<pre>"
         if page == "/cmd_list": # list mods
             self.pages["/cmd_list"] = "<pre>Waiting for a list of available modules...</pre>"
             runcmd = "(python -i cintruder --list "+ "|tee /tmp/out) &"
@@ -521,10 +569,13 @@ function runCommandX(cmd,params) {
                 cmd_options = cmd_options + "--mod='" + pGet["module"] + "' "
             if not pGet["xml"]=="off":
                 cmd_options = cmd_options + "--xml='" + pGet["xml"] + "' "
+            if not pGet["colourID"]=="off":
+                cmd_options = cmd_options + "--set-id='" + pGet["colourID"] + "' "
             if pGet["source_file"]=="off": # from remote url source
                 runcmd = "(python -i cintruder --crack '"+pGet["crack_url"]+"' " + cmd_options + "|tee /tmp/out) &"
             else: # from local source 
                 source_file = pGet["source_file"]
+                print "(python -i cintruder --crack '"+source_file+"' " + cmd_options + "|tee /tmp/out) &"
                 runcmd = "(python -i cintruder --crack '"+source_file+"' " + cmd_options + "|tee /tmp/out) &"
         if page == "/cmd_crack_update":
             if not os.path.exists('/tmp/out'):

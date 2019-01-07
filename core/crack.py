@@ -93,7 +93,7 @@ class CIntruderCrack(object):
             for y in range(im.size[0]):
                 pix = im.getpixel((y, x))
                 temp[pix] = pix
-                if pix == 3: # pixel colour id 
+                if pix == int(options.setids):  # pixel colour id 
                     im2.putpixel((y, x), 0)
         inletter = False
         foundletter = False
@@ -103,7 +103,7 @@ class CIntruderCrack(object):
         for y in range(im2.size[0]): # slice across
             for x in range(im2.size[1]): # slice down
                 pix = im2.getpixel((y, x))
-                if pix != 255:
+                if pix == 0:
                     inletter = True
             if foundletter == False and inletter == True:
                 foundletter = True

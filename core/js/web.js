@@ -152,21 +152,21 @@ function SetXML() {
    }
 }
 function loadRemoteOCR(train_url){
-       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif#"+ new Date().getTime();
+       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif?"+ new Date().getTime();
        document.getElementById('Captcha-IN').style.display = 'block';
        document.getElementById("directory-words").src = "directory-words";
        document.getElementById("OCR-out").style.display = "block";
 }
 function loadRemoteOCRCrack(crack_url){
-       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif#"+ new Date().getTime();
+       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif?"+ new Date().getTime();
        document.getElementById('Captcha-IN').style.display = 'block';
 }
 function loadOCRCrack(){
-       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif#"+ new Date().getTime();
+       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif?"+ new Date().getTime();
        document.getElementById('Captcha-IN').style.display = 'block';
 }
 function loadOCR(){
-       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif#"+ new Date().getTime();
+       document.getElementById("target_captcha_img_path").src="images/previews/last-preview.gif?"+ new Date().getTime();
        document.getElementById('Captcha-IN').style.display = 'block';
        document.getElementById("directory-words").src = "directory-words";
        document.getElementById("OCR-out").style.display = "block";
@@ -261,6 +261,7 @@ function CrackCaptchas(){
         }else {
          tor="off";
         }
+        colourID=document.getElementById("set_id3").value;
         if(document.getElementById("verbose3").checked) 
         {
          verbose="on";
@@ -276,7 +277,7 @@ function CrackCaptchas(){
         if(source_file==""){
         source_file="off"
         }
-        params="crack_url="+escape(crack_url)+"&source_file="+escape(source_file)+"&module="+escape(module)+"&tor="+escape(tor)+"&verbose="+escape(verbose)+"&xml="+escape(xml);
+        params="crack_url="+escape(crack_url)+"&source_file="+escape(source_file)+"&colourID="+escape(colourID)+"&module="+escape(module)+"&tor="+escape(tor)+"&verbose="+escape(verbose)+"&xml="+escape(xml);
          }
          runCommandX("cmd_crack",params);
          if(source_file=="off"){
