@@ -127,6 +127,9 @@ Crack: <input type="radio" onclick="javascript:OptionsCheck();" name="options" i
  <td><center>
 LOCAL: <input type="radio" onclick="javascript:TrainSourcesCheck();" name="training_sources" id="training_local"/ CHECKED>
 URL: <input type="radio" onclick="javascript:TrainSourcesCheck();" name="training_sources" id="training_url"/>
+
+
+ <br><a href='javascript:runCommandX("cmd_tracklist");javascript:showResults()'>List Last Tracked</a>
 </center></td>
 <td>
 <div id="ifLocal" style="display:none">
@@ -358,7 +361,7 @@ function runCommandX(cmd,params) {
                                 if(newcmd=="cmd_remove_ocr" || newcmd=="cmd_move_ocr" || newcmd=="cmd_dict"){ //do not refresh
                                     return;
                                 } else {
-                                if(newcmd=="cmd_list" || newcmd=="cmd_track" || newcmd=="cmd_crack" || newcmd=="cmd_train") newcmd=newcmd+"_update"
+                                if(newcmd=="cmd_list" || newcmd == "cmd_tracklist" || newcmd=="cmd_track" || newcmd=="cmd_crack" || newcmd=="cmd_train") newcmd=newcmd+"_update"
 								//do not refresh if certain text on response is found
 								if(newcmd.match(/update/) && 
 			 					(
@@ -471,6 +474,14 @@ function runCommandX(cmd,params) {
                     os.remove(o) # purge from previews
                 except:
                     pass
+        if page == "/cmd_tracklist": # list last tracks
+            self.pages["/cmd_tracklist"] = "<pre>Waiting for a list of last tracks...</pre>"
+            runcmd = "( tree -falrRtD -P \"*.gif\" inputs/     "+ "|tee /tmp/out) &"
+        if page == "/cmd_tracklist_update":
+            if not os.path.exists('/tmp/out'):
+                open('/tmp/out', 'w').close()
+            with open('/tmp/out', 'r') as f:
+                self.pages["/cmd_tracklist_update"] = "<pre>"+f.read()+"<pre>"
         if page == "/cmd_list": # list mods
             self.pages["/cmd_list"] = "<pre>Waiting for a list of available modules...</pre>"
             runcmd = "(python -i cintruder --list "+ "|tee /tmp/out) &"
